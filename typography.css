@@ -1,0 +1,319 @@
+/* Screen reading: dark ink, system fonts, and consistent text sizes. */
+body {
+  font-weight: 400;
+  text-rendering: auto;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #626b5c;
+  opacity: 1;
+}
+
+button:disabled {
+  opacity: 1;
+  color: #72796c;
+  background-color: #eceee7;
+  border-color: #d2d7c9;
+}
+
+.brand strong,
+.brand-seal,
+.vessel-inscription {
+  font-family: var(--display);
+}
+
+.sidebar { overflow-y: auto; }
+.brand { margin-bottom: 32px; }
+.brand small { line-height: 1.6; letter-spacing: 0; }
+.sidebar-bottom { padding-top: 24px; }
+.local-status { white-space: normal; line-height: 1.7; }
+.side-caption { letter-spacing: 1.5px; }
+.nav-link { font-size: 16px; letter-spacing: 0; min-height: 47px; }
+.nav-link.active { color: #2e4627; }
+.source-link { flex-wrap: wrap; line-height: 1.6; }
+.top-title { font-size: 15px; letter-spacing: 0; }
+.topbar { gap: 16px; }
+.global-search { width: 320px; min-height: 44px; }
+.global-search input { font-size: 15px; }
+.global-search kbd { flex-shrink: 0; }
+.top-date { letter-spacing: 0; }
+.site-footer { flex-wrap: wrap; gap: 12px; letter-spacing: 0; }
+
+#main :is(h1,h2,h3) {
+  font-weight: 600;
+  letter-spacing: .025em;
+  color: #293225;
+}
+
+#main p {
+  font-size: 17px;
+  line-height: 1.9;
+  color: #3f4939;
+  letter-spacing: 0;
+}
+
+.eyebrow,
+#main .eyebrow {
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 1.3px;
+  color: #506046;
+}
+
+.button,
+#main .button {
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 44px;
+  letter-spacing: 0;
+  padding: 11px 18px;
+}
+
+.button.primary { color: #fff; }
+.button svg { width: 17px; height: 17px; }
+.text-link,
+#main .text-link { font-size: 15px; line-height: 1.6; letter-spacing: 0; }
+#main .chip { font-size: 15px; line-height: 1.5; min-height: 42px; }
+#main :is(input,select,textarea) { font-size: 17px; }
+.section-heading { flex-wrap: wrap; }
+.section-heading h2 { font-size: 24px; }
+#main .page-heading h1 { font-size: 34px; }
+.filter-bar { flex-wrap: wrap; }
+.filter-select { min-height: 44px; }
+
+#main :is(
+  .muted,.source-notice,.explore-provenance,.journey-finished>p.muted,
+  .daily-note,.draw-history-empty small,.study-doorway p,
+  .explore-intro-art>p,.daily-date>span,.lab-change
+) {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #56604e;
+}
+
+/* Give prose more space than navigation and bibliographic labels. */
+#main :is(.reading-block,.reading-block.commentary) {
+  font-size: var(--reading-size,20px);
+  line-height: 1.95;
+  color: #30392c;
+}
+#main .reading-block.original { font-size: calc(var(--reading-size,20px) + 2px); }
+#main .reading-block p { font-size: inherit; color: inherit; line-height: inherit; }
+.reading-block { padding: 24px 27px; }
+.reading-block.commentary { padding: 14px 0; }
+.reading-section { scroll-margin-top: 130px; }
+.reading-toolbar { flex-wrap: wrap; }
+.reading-tabs { flex-wrap: wrap; }
+.reader-toc a { font-size: 15px; line-height: 1.7; padding-top: 9px; padding-bottom: 9px; }
+#main .reader-heading h1 small { font-size: 17px; letter-spacing: 0; }
+#main .note-body { font-size: 18px; line-height: 1.9; color: #384331; }
+#note-text { font-size: 18px; line-height: 1.9; color: #30392c; }
+.page-text { font-size: 19px; line-height: 1.95; color: #30392c; }
+.page-controls { flex-wrap: wrap; gap: 12px; }
+
+/* Daily draw. */
+.daily-note { flex-wrap: wrap; gap: 8px; }
+.daily-intro { padding-right: 22px; }
+#main .daily-intro>p { font-size: 18px; line-height: 1.9; }
+.ritual-steps { flex-wrap: wrap; letter-spacing: 0; }
+.ritual-steps i { font-size: 15px; }
+.result-topline { flex-wrap: wrap; }
+.result-reading>h2>span { font-size: 17px; letter-spacing: 0; }
+#main .lot-judgment>p { font-size: 24px; line-height: 1.85; color: #2e3c27; }
+#main .lot-translation>p { font-size: 18px; }
+#main .lot-reflection>p { font-size: 18px; }
+.lot-explanation>summary { font-size: 16px; }
+.lot-label { color: #56604e; letter-spacing: 1px; }
+.result-actions { gap: 10px; }
+.result-secondary>span { line-height: 1.8; }
+.record-bottom { flex-wrap: wrap; gap: 5px; }
+.study-doorway h3 { font-size: 21px; }
+.record-gua small,.gua-card .gua-title { line-height: 1.7; }
+.gua-card-bottom { flex-wrap: wrap; gap: 7px; }
+
+/* Exploratory learning. */
+.explore-intro { grid-template-columns: 1.3fr 1fr; }
+#main .explore-intro h1 { font-size: 36px; line-height: 1.5; }
+#main .explore-intro>div:first-child>p { font-size: 18px; }
+.explore-route { flex-wrap: wrap; }
+.explore-route>span { font-size: 16px; }
+.explore-route small { font-size: 14px; }
+.explore-count { font-size: 14px; }
+.scene-card { display: flex; flex-direction: column; }
+.scene-topline { flex-wrap: wrap; line-height: 1.7; }
+.scene-card-copy { flex: 1; display: flex; flex-direction: column; }
+.scene-card h3 { font-size: 27px; }
+.scene-card-bottom { margin-top: auto; padding-top: 16px; line-height: 1.8; }
+#main .scene-card-copy>p { margin-bottom: 18px; font-size: 17px; }
+.scene-concept { letter-spacing: 1px; }
+.explore-home-entry { flex-wrap: wrap; }
+.explore-home-entry strong { font-size: 24px; font-weight: 600; letter-spacing: 0; }
+.explore-home-entry em { line-height: 1.8; max-width: none; }
+.explore-entry-cta { font-size: 16px; }
+.explore-back { flex-wrap: wrap; line-height: 1.8; }
+.explore-lab-entry { flex-wrap: wrap; }
+.explore-lab-entry>div:nth-child(2) { flex: 1; min-width: 180px; }
+.journey-steps small { white-space: normal; line-height: 1.5; }
+.journey-steps strong { font-weight: 600; }
+.journey-steps button:disabled { background: transparent; }
+#main .scene-story h2 { font-size: 27px; line-height: 1.6; }
+#main .scene-story>p { font-size: 18px; }
+.choice-question { font-size: 18px; font-weight: 500; }
+.scene-choice { font-size: 17px; line-height: 1.8; min-height: 59px; }
+.scene-choice.chosen { color: #31482a; }
+.scene-response>span { font-weight: 500; }
+.journey-actions { flex-wrap: wrap; }
+.journey-actions>span { line-height: 1.8; }
+.observation-big { font-weight: 600; letter-spacing: 0; }
+.observation-caption>.text-link { display: flex; }
+#main .observation-caption>.observation-quote { font-size: 20px; color: #33452b; }
+.explore-line { min-height: 42px; }
+.explore-line:disabled { opacity: 1; background: transparent; color: #a0a996; }
+.explore-line:disabled :is(.line-rank,.line-hint) { color: #68735e; }
+.line-hint { width: 36px; }
+.trigram-reveal { gap: 14px; }
+.trigram-reveal small { font-size: 16px; line-height: 1.8; }
+.trigram-reveal strong { font-size: 18px; font-weight: 500; }
+.trigram-reveal .hexagram { width: 36px; }
+.explore-source-top { flex-wrap: wrap; }
+.explore-source blockquote { font-size: 21px; line-height: 1.9; color: #343b2f; letter-spacing: 0; }
+.explore-source summary { font-size: 16px; min-height: 30px; }
+.reflection-label { font-size: 18px; font-weight: 500; }
+.lab-presets { flex-wrap: wrap; }
+.lab-composition { font-size: 15px; line-height: 1.8; }
+#main .lab-judgment { font-size: 23px; color: #2e3c27; }
+#main .lab-translation { font-size: 18px; }
+.lab-hint>small { font-size: 14px; line-height: 1.8; }
+.lab-result>.text-link { display: flex; margin: 16px 0 0; }
+
+@media (max-width: 1180px) {
+  .topbar { flex-wrap: wrap; height: auto; min-height: 82px; padding-top: 16px; padding-bottom: 16px; }
+  .top-date { display: none; }
+  .daily-result { grid-template-columns: 200px minmax(0,1fr); }
+  .draw-history-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .study-doorways { grid-template-columns: 1fr; }
+  .study-doorway { padding: 22px 12px; }
+  .study-doorway+.study-doorway { border-left: 0; border-top: 1px solid var(--line); }
+  .journey-layout { grid-template-columns: 210px minmax(0,1fr); }
+  .observation-board { grid-template-columns: 1fr; }
+  .observation-board .explore-lines { max-width: 280px; margin-left: auto; margin-right: auto; }
+  .observation-caption { border-top: 1px solid #d7decd; padding-top: 20px; }
+  .exchange-figure { border-right: 0; padding-right: 0; }
+}
+
+@media (max-width: 920px) {
+  .topbar .global-search { width: 260px; }
+  .daily-result { grid-template-columns: 1fr; }
+  .daily-intro { padding-right: 0; }
+  .daily-ritual { grid-template-columns: 1fr; }
+  .daily-intro { padding: 30px; }
+  .lot-art { transform: none; overflow: hidden; min-height: 290px; }
+  .lot-still-life { transform: scale(.8); }
+  .lot-orbit { top: 10px; }
+  .orbit-two { top: 0; }
+  .art-footnote { bottom: 10px; }
+  .explore-intro { grid-template-columns: 1fr; }
+  .explore-intro-art { display: none; }
+  .journey-layout { display: block; }
+  .explore-home-entry .explore-entry-cta { width: auto; }
+  .trigram-reveal .hexagram { width: 42px; }
+  .reading-tabs .chip { padding-left: 10px; padding-right: 10px; }
+  .source-card { flex-wrap: wrap; }
+}
+
+@media (max-width: 680px) {
+  .topbar { flex-wrap: nowrap; padding: 13px 19px; gap: 10px; min-height: 72px; }
+  .top-title { flex-shrink: 0; gap: 8px; }
+  .topbar .global-search { flex: 1; min-width: 0; width: auto; padding: 9px; gap: 6px; }
+  .global-search input { min-width: 0; font-size: 16px; }
+  .global-search kbd { display: none; }
+  .sidebar { width: 260px; }
+  .brand small { max-width: 145px; }
+  #main p { font-size: 17px; line-height: 1.85; }
+  #main .page-heading h1 { font-size: 30px; }
+  #main :is(.source-notice,.explore-provenance,.journey-finished>p.muted,.muted) { font-size: 14px; }
+  .section-heading { align-items: start; gap: 8px; }
+  .section-heading h2 { font-size: 23px; }
+  .heading-note { display: block; margin: 5px 0 0; }
+  .daily-intro { padding: 27px 20px 0; }
+  #main .daily-intro>p { font-size: 17px; }
+  .ritual-steps { justify-content: center; gap: 8px 14px; padding: 17px 0; }
+  .daily-date { flex-shrink: 0; }
+  .daily-date>span { max-width: 125px; letter-spacing: 0; line-height: 1.6; }
+  .daily-result { padding: 22px 18px; }
+  .result-topline .eyebrow { letter-spacing: 0; }
+  .lot-judgment>p { overflow-wrap: anywhere; }
+  .record-date { flex-wrap: wrap; gap: 4px; }
+  .record-bottom { display: block; }
+  .record-bottom>span { display: block; margin-top: 4px; }
+  .explore-home-entry { gap: 15px; }
+  .explore-home-entry>span:nth-child(2) { flex: 1; min-width: 0; }
+  .explore-home-entry strong { font-size: 21px; line-height: 1.6; }
+  .explore-home-entry small { line-height: 1.7; letter-spacing: 0; }
+  .explore-home-entry .explore-entry-cta { width: 100%; }
+  #main .explore-intro h1 { font-size: 29px; line-height: 1.6; }
+  #main .explore-intro>div:first-child>p { font-size: 17px; }
+  .explore-route { gap: 11px; }
+  .explore-route>span { font-size: 15px; }
+  .scene-grid { grid-template-columns: 1fr; gap: 16px; }
+  .scene-card { display: grid; grid-template-columns: 95px minmax(0,1fr); }
+  .scene-topline { grid-column: 1/-1; padding: 16px 19px 0; }
+  .scene-card>.scene-art { margin: 15px 0 0; height: 120px; background: none; align-self: start; }
+  .scene-card-copy { padding: 16px 18px 20px 8px; }
+  .scene-card h3 { font-size: 26px; }
+  #main .scene-card-copy>p { font-size: 17px; }
+  .scene-card-bottom { margin-top: 0; }
+  .explore-lab-entry { gap: 18px; }
+  .lab-entry-symbol .hexagram { width: 36px; }
+  .journey-content { padding: 25px 19px; }
+  #main .scene-story h2 { font-size: 25px; }
+  .journey-steps { gap: 14px; }
+  .journey-steps button { grid-template-columns: 25px 1fr; gap: 8px; }
+  .journey-steps button>span { height: 25px; }
+  .journey-steps strong { font-size: 17px; }
+  .journey-steps small { display: none; }
+  .scene-choice { padding: 14px 12px; align-items: baseline; gap: 10px; }
+  .scene-choice>span,.scene-choice>i { flex-shrink: 0; }
+  .journey-actions { gap: 16px; }
+  .journey-actions>.button { flex: 1 1 100%; }
+  .observation-caption>.scene-art { display: none; }
+  .trigram-reveal { padding: 16px 12px; gap: 13px; }
+  .trigram-reveal .hexagram { width: 33px; }
+  .trigram-reveal>i { display: none; }
+  .explore-source blockquote { font-size: 20px; }
+  .lab-controls { padding-left: 20px; padding-right: 20px; }
+  .lab-controls .explore-line { gap: 15px; }
+  .lab-result { padding: 27px 20px; }
+  .lab-controls-bottom { gap: 16px; flex-wrap: wrap; }
+  .reading-toolbar { position: static; }
+  .reading-tabs { gap: 6px; }
+  .reading-section { scroll-margin-top: 20px; }
+  .reading-block { padding: 20px 18px; }
+  .reading-block.commentary { padding: 12px 0; }
+  .page-text { padding: 20px 18px; font-size: 18px; }
+  .page-controls { justify-content: center; }
+  .page-controls>form { order: -1; width: 100%; justify-content: center; }
+  #main :is(.reader-heading p,.reader-heading h1 small) { font-size: 16px; }
+  .reader-actions { gap: 8px; }
+  .reader-actions .button { flex: 1; padding-left: 9px; padding-right: 9px; }
+}
+
+/* The homepage keeps one focal point; other activities live in the navigation. */
+.daily-journal-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 20px 2px 0;
+  color: #59644f;
+  font-size: 14px;
+}
+.daily-journal-line>div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.daily-journal-line .text-link { min-height: 44px; padding: 6px 0; }
+.daily-journal-line>a { margin-left: auto; white-space: nowrap; }
+.daily-journal-line svg { width: 16px; height: 16px; }
+@media(max-width:680px) {
+  .daily-journal-line { gap: 2px 18px; padding-top: 14px; }
+}

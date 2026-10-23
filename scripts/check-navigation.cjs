@@ -1,0 +1,30 @@
+const assert=require('node:assert/strict');
+const N=require('../navigation.js');
+const book={chapters:[{id:5,title:'水天需'}]};
+let entries=[{hash:'#home',state:null}],cursor=0,lastDelta=null;
+const location={get hash(){return entries[cursor].hash;},replace(hash){entries[cursor].hash=hash;}};
+const history={get state(){return entries[cursor].state;},replaceState(state){entries[cursor].state=structuredClone(state);},go(delta){lastDelta=delta;cursor+=delta;assert.ok(cursor>=0&&cursor<entries.length);}};
+const make=()=>N.create({history,location,describe:hash=>N.describe(hash,book)});
+let nav=make();nav.sync();assert.equal(nav.target(),null);assert.equal(nav.back(),false);
+function visit(hash){entries=entries.slice(0,cursor+1);entries.push({hash,state:null});cursor++;nav.sync();}
+visit('#library');visit('#read/5/0');visit('#read/5/7');visit('#read/5/8');
+assert.equal(nav.target(),'#library');
+visit('#source/25');visit('#source/26');
+assert.equal(nav.target(),'#read/5/8');
+nav.back();nav.sync();assert.equal(lastDelta,-2);assert.equal(location.hash,'#read/5/8');
+nav.back();nav.sync();assert.equal(lastDelta,-3);assert.equal(location.hash,'#library');
+history.go(3);nav.sync();assert.equal(location.hash,'#read/5/8');assert.equal(nav.target(),'#library');
+nav=make();nav.sync();assert.equal(nav.target(),'#library','Refresh retains the previous logical page');
+visit('#interpret');visit('#interpret/example');
+nav.back();nav.sync();assert.equal(location.hash,'#interpret');
+assert.equal(N.describe('#interpret/record/i-abc',book).parent,'#interpret/history');
+assert.equal(N.describe('#read/5/7',book).crumbs.at(-1).label,'水天需');
+assert.equal(N.describe('#explore/bagua/%E5%9D%A4',book).group,N.describe('#explore/bagua/%E4%B9%BE',book).group);
+
+entries=[{hash:'#read/5/7',state:null}];cursor=0;nav=make();nav.sync();
+assert.equal(nav.target(),'#library');nav.back();nav.sync();
+assert.equal(location.hash,'#library');assert.equal(nav.target(),'#home','Direct-entry fallback must not loop back into the article');
+nav.back();nav.sync();assert.equal(location.hash,'#home');assert.equal(nav.target(),null);
+entries=[{hash:'#source/25',state:{guanyiNavigation:{hash:'#source/25',index:0,trail:[{hash:'https://example.com',index:-1}]}}}];
+cursor=0;nav=make();nav.sync();assert.equal(nav.target(),'#source','Ignore invalid or external history records');
+console.log('PASS: logical page back, chapter and source substeps, native forward/back, reload, branched history, direct-entry fallback and invalid history state.');

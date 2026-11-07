@@ -2,20 +2,23 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f5f3ed"><meta name="description" content="以《傅佩荣解读易经》为底本的本地学习书房。每日随机抽一签，用口诀、翻卡和翻爻互动认识八卦，再对照原书学习六十四卦，记录思考。">
-  <title>观易 · 易经学习书房</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="explore.css"><link rel="stylesheet" href="typography.css"><link rel="stylesheet" href="reader-guide.css"><link rel="stylesheet" href="learning.css"><link rel="stylesheet" href="interpret.css"><link rel="stylesheet" href="navigation.css">
+  <meta name="theme-color" content="#f7f8f9"><meta name="description" content="每日一签，三钱起卦，动手认识阴阳与八卦。用卦图对照原文学习六十四卦，留下自己的理解。">
+  <title>观易 · 在变化中学习</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="explore.css"><link rel="stylesheet" href="typography.css"><link rel="stylesheet" href="reader-guide.css"><link rel="stylesheet" href="learning.css"><link rel="stylesheet" href="interpret.css"><link rel="stylesheet" href="navigation.css"><link rel="stylesheet" href="redesign.css">
   <script defer src="assets/book-data.js"></script><script defer src="daily-draw.js"></script><script defer src="explore.js"></script><script defer src="reader-guide.js"></script><script defer src="learning.js"></script><script defer src="interpret.js"></script><script defer src="navigation.js"></script><script defer src="app.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳转到正文</a>
-  <aside class="sidebar" id="sidebar">
-    <a class="brand" href="#home"><span class="brand-seal">易</span><span><strong>观易</strong><small>一间静心<br>读易的书房</small></span></a>
-    <div class="side-caption">学而时习之</div><nav id="navigation" aria-label="主导航"></nav>
-    <div class="sidebar-bottom"><div class="sidebar-progress"><span>我的读易进度</span><strong id="side-count">0 / 64</strong></div><div class="progress-track"><i id="side-progress"></i></div><p>日拱一卒，功不唐捐。</p><a class="source-link" href="#source"><span class="source-icon">册</span><span>傅佩荣解读易经<small>本地藏书 · 212 页</small></span><span>↗</span></a><div class="local-status"><i></i> 本地书房 · 数据留在此浏览器</div></div>
-  </aside>
-  <div class="workspace"><header class="topbar"><div class="top-title"><button class="icon-button mobile-menu" id="mobile-menu" aria-label="展开导航">☰</button><button class="page-back" id="page-back" type="button" aria-label="返回上一页"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button><nav id="breadcrumb" aria-label="当前位置"><span>每日一签</span></nav></div><form id="global-search" class="global-search" role="search"><span id="search-icon"></span><input id="global-query" aria-label="搜索卦名、卦辞或关键词" placeholder="搜索卦名、卦辞或关键词…" autocomplete="off" enterkeyhint="search"><kbd>/</kbd><button class="search-cancel" id="cancel-search" type="button" title="取消搜索（Esc）" aria-label="取消搜索" hidden>取消</button></form><div class="top-date" id="top-date"></div></header>
-  <main id="main" tabindex="-1"></main><footer class="site-footer"><span>观易 · 在变化中，找到自己的从容</span><span>读原典 · 明义理 · 见自己</span></footer></div>
+  <header class="app-header">
+    <div class="masthead">
+      <a class="brand" href="#home" aria-label="观易首页"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 6h26M3 16h10m6 0h10M3 26h26"/></svg><span><strong>观易</strong><small>GUANYI</small></span></a>
+      <aside class="sidebar" id="sidebar" aria-label="栏目菜单"><div class="drawer-heading"><strong>观易</strong><button id="close-menu" class="icon-button" aria-label="关闭菜单" type="button">×</button></div><nav id="navigation" aria-label="主导航"></nav><div class="nav-records"><a href="#draws">我的签录 ↗</a><a href="#interpret/history">我的卦记 ↗</a></div></aside>
+      <button class="icon-button mobile-menu" id="mobile-menu" aria-label="展开全部导航" aria-controls="sidebar" aria-expanded="false"><span>菜单</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+    <div class="topbar"><div class="top-title"><button class="page-back" id="page-back" type="button" aria-label="返回上一页"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18"/></svg><span>返回</span></button><nav id="breadcrumb" aria-label="当前位置"><span>每日一签</span></nav></div><form id="global-search" class="global-search" role="search"><span id="search-icon"></span><input id="global-query" aria-label="搜索卦名、卦辞或关键词" placeholder="搜索卦名、卦辞或关键词…" autocomplete="off" enterkeyhint="search"><kbd>/</kbd><button class="search-cancel" id="cancel-search" type="button" title="取消搜索（Esc）" aria-label="取消搜索" hidden>取消</button></form><div class="top-date" id="top-date"></div></div>
+  </header>
+  <button class="menu-backdrop" id="menu-backdrop" type="button" aria-label="关闭菜单遮罩" tabindex="-1" hidden></button>
+  <div class="workspace"><main id="main" tabindex="-1"></main><footer class="site-footer"><div class="footer-signature"><strong>观易</strong><span>观其象，知其变。</span></div><div class="footer-progress"><span>已读 <strong id="side-count">0 / 64</strong> 卦</span><div class="progress-track"><i id="side-progress"></i></div></div><div class="footer-links"><a href="#draws">签录</a><a href="#interpret/history">卦记</a><a href="#notes">笔记与备份</a><a href="#source">原书图文 ↗</a></div></footer></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <dialog id="note-dialog"><form method="dialog" class="dialog-inner" id="note-form"><div class="section-heading"><div><span class="eyebrow">思考有迹</span><h2 id="note-title">写下此刻的领悟</h2></div><button class="icon-button" value="cancel" aria-label="关闭笔记">×</button></div><p class="muted">不必求全，记下与你当下生活有关的一句话。</p><textarea id="note-text" aria-label="学习笔记" placeholder="这段话让我想到……" rows="9" maxlength="20000"></textarea><div class="dialog-bottom"><span class="muted">保存在此浏览器，可从「我的笔记」备份</span><button class="button primary" id="save-note" type="button">保存笔记</button></div></form></dialog>
   <noscript>请在浏览器中启用 JavaScript，以使用阅读、搜索和笔记功能。也可直接打开项目中的 PDF。</noscript>

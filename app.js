@@ -65,7 +65,7 @@
   }
   const pct = () => Math.round(state.completed.length/64*100);
   const navItems=[['home','home','每日一签'],['interpret','repeat','起卦与解卦'],['explore','leaf','动手学易'],['library','grid','六十四卦'],['basics','book','易学入门'],['practice','repeat','温故知新'],['notes','pen','我的笔记']];
-  let routeName='home',activeRead=null,readMode='all',libraryFilter='all',upperFilter='',libraryQuery='',noteId=null,quiz=null,searchQuery='';
+  let routeName='home',activeRead=null,readMode='all',libraryFilter='all',libraryView='grid',upperFilter='',libraryQuery='',noteId=null,quiz=null,searchQuery='';
   const readerGuide = ReaderGuide.create({book,jump:index=>{
     if(!activeRead)return;
     savePosition();
@@ -88,6 +88,11 @@
     updateSearchChrome();
   }
   function updateChrome() {
+    const header=$('.app-header'),form=$('#global-search');
+    const rootPage=navItems.some(([id])=>id===routeName)&&!location.hash.slice(1).split('/').slice(1).some(Boolean);
+    header.classList.toggle('section-root',rootPage);
+    const searchParent=rootPage?$('.masthead'):$('.topbar');
+    if(form.parentElement!==searchParent)searchParent.append(form);
     const active=routeName==='read'?'library':routeName==='draws'?'home':routeName;
     $('#navigation').innerHTML=navItems.map(([id,ic,label])=>`<a class="nav-link ${active===id?'active':''}" href="#${id}" ${active===id?'aria-current="page"':''}>${icon(ic)}<span>${label}</span>${active===id?'<i class="nav-dot"></i>':''}</a>`).join('');
     const titles={home:'每日一签',draws:'我的签录',interpret:'起卦与解卦',explore:'动手学易',library:'六十四卦',basics:'易学入门',practice:'温故知新',notes:'我的笔记',read:'六十四卦 / 静心阅读',search:'书中检索',source:'我的藏书'};
@@ -100,17 +105,18 @@
     $('#side-count').textContent=`${state.completed.length} / 64`;
     $('#side-progress').style.width=`${pct()}%`;
     document.documentElement.style.setProperty('--reading-size',`${state.fontSize}px`);
-    document.title=`${routeName==='read'?byId(activeRead)?.title:titles[routeName]||'学习书房'} · 观易`;
+    document.title=`${routeName==='read'?byId(activeRead)?.title:titles[routeName]||'在变化中学习'} · 观易`;
   }
   let selectedDrawId=null, drawing=false, homeDay=Draw.dayKey();
   const drawDate = entry => new Date(`${entry.day}T12:00:00`).toLocaleDateString('zh-CN',{month:'long',day:'numeric'});
   const drawTime = entry => new Date(entry.createdAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});
   function currentDraw() { return state.draws.find(entry=>entry.id===selectedDrawId) || Draw.today(state.draws); }
-  function stickArt() {
-    return `<div class="lot-art ${drawing?'is-drawing':''}" aria-hidden="true"><div class="lot-orbit orbit-one"></div><div class="lot-orbit orbit-two"></div><span class="orbit-word word-east">静</span><span class="orbit-word word-west">观</span><div class="lot-still-life"><div class="incense-shadow"></div><div class="lot-sticks">${[-30,-21,-12,-4,5,14,23,32].map((angle,i)=>`<i class="bamboo-stick stick-${i}" style="--tilt:${angle}deg;--rise:${[17,4,23,11,30,7,19,2][i]}px"><span>${['乾','坤','震','巽','坎','离','艮','兑'][i]}</span></i>`).join('')}<i class="bamboo-stick chosen-stick"><span>易</span></i></div><div class="lot-vessel"><span class="vessel-rim"></span><span class="vessel-inscription">观易</span><span class="vessel-seal">日有所悟</span></div></div><span class="art-footnote">六 十 四 卦 · 一 签 一 会</span></div>`;
+  function drawArt() {
+    const marks=(bits,x,y)=>bits.slice().reverse().map((b,i)=>b?`<rect x="${x}" y="${y+i*23}" width="106" height="10" rx="1"/>`:`<rect x="${x}" y="${y+i*23}" width="45" height="10" rx="1"/><rect x="${x+61}" y="${y+i*23}" width="45" height="10" rx="1"/>`).join('');
+    return `<div class="lot-art signature-art ${drawing?'is-drawing':''}" aria-hidden="true"><svg viewBox="0 0 560 410"><path class="art-baseline" d="M45 359h470"/><g class="signature-card card-back-left" transform="rotate(-13 277 208)"><rect x="179" y="53" width="198" height="296" rx="10"/><path d="M207 85h142M207 316h142"/></g><g class="signature-card card-back-right" transform="rotate(12 277 208)"><rect x="179" y="53" width="198" height="296" rx="10"/><path d="M207 85h142M207 316h142"/></g><g class="signature-card card-front"><rect x="179" y="40" width="198" height="296" rx="10"/><text x="205" y="76" class="card-micro">六爻 · 六十四种可能</text><g class="card-hex">${marks([1,0,1,0,1,1],225,111)}</g><path class="card-divider" d="M205 267h146"/><text x="205" y="306" class="card-inscription">观其象，知其变。</text><rect class="card-seal" x="326" y="285" width="25" height="25" rx="2"/><path class="seal-lines" d="M332 291h13m-13 6h5m3 0h5m-13 6h13"/></g><text x="64" y="151" class="art-label">阴</text><path class="art-leader" d="M84 151h45"/><text x="458" y="249" class="art-label">阳</text><path class="art-leader" d="M407 244h40"/><text x="280" y="395" text-anchor="middle" class="art-caption">一签为引，读懂一重变化。</text></svg></div>`;
   }
   function drawRitual() {
-    return `<section class="daily-ritual ${drawing?'is-drawing':''}" aria-busy="${drawing}"><div class="daily-intro"><span class="eyebrow">A MOMENT WITH THE I CHING</span><h1>静心片刻，<br>遇见今日一签。</h1><p>把纷杂暂且放下，心中留一件想思考的事。<br>从六十四卦中抽取一签，让古人的智慧，<br>成为今天的一点启发。</p><button class="button draw-button" data-draw ${drawing?'disabled':''}>${drawing?'<span class="draw-spinner"></span> 正在抽签…':'抽取今日签 '+arrow}</button><span class="draw-caption" role="status">${drawing?'签筒轻摇，静候一卦。':'一签为引，读易为伴。'}</span></div>${stickArt()}<div class="ritual-steps"><span><i>01</i> 静心 · 留一个念头</span><span><i>02</i> 抽签 · 遇一重卦象</span><span><i>03</i> 读易 · 得一点体悟</span></div></section>`;
+    return `<section class="daily-ritual ${drawing?'is-drawing':''}" aria-busy="${drawing}"><div class="daily-intro"><span class="eyebrow">今日，留一点时间给自己</span><h1>静下心，<br>看见此刻的变化。</h1><p>心中留一件想思考的事。<br>从六十四卦中遇见一卦，换个角度，看看当下。</p><button class="button draw-button" data-draw ${drawing?'disabled':''}>${drawing?'<span class="draw-spinner"></span> 正在抽签…':'抽取今日一签 '+arrow}</button><span class="draw-caption" role="status">${drawing?'六爻之间，静候一卦。':'抽签结果会自动保存，随时可以回来细读。'}</span></div>${drawArt()}<div class="ritual-steps"><span><i>01</i> 留一个念头</span><span><i>02</i> 遇见一卦</span><span><i>03</i> 读懂，再想一想</span></div></section>`;
   }
   function excerpt(text, limit=190) {
     if(text.length<=limit)return text;
@@ -148,7 +154,13 @@
   }
   function guaCard(c){return `<a class="card gua-card" href="#read/${c.id}"><div class="gua-card-top">${hex(c.bits)}<span class="gua-num">${String(c.id).padStart(2,'0')}</span></div><h3>${c.name}</h3><div class="gua-title">${c.title} · ${c.upper}上${c.lower}下</div><div class="gua-card-bottom"><span>${c.keyword}</span><span class="gua-status">${state.completed.includes(c.id)?'✓ 已读':state.bookmarks.includes(c.id)?'◇ 已收藏':`第 ${c.page} 页`}</span></div></a>`;}
   function filteredChapters(){return book.chapters.filter(c=>(libraryFilter==='all'||libraryFilter==='upper'&&c.id<=30||libraryFilter==='lower'&&c.id>30||libraryFilter==='saved'&&state.bookmarks.includes(c.id)||libraryFilter==='done'&&state.completed.includes(c.id))&&(!upperFilter||c.upper===upperFilter)&&(!libraryQuery||(c.name+c.title+c.keyword).includes(libraryQuery)||String(c.id)===libraryQuery));}
-  function library(){const chapters=filteredChapters();return `${pageHeading('SIXTY-FOUR HEXAGRAMS','六十四卦','依文王卦序，从乾坤到未济。每一卦，都是理解变化的一扇窗。',`<span class="tiny-label">已读 ${state.completed.length} 卦 · ${pct()}%</span>`)}<div class="filter-bar">${[['all','全部'],['upper','上经 · 30'],['lower','下经 · 34'],['saved','我的收藏'],['done','已读']].map(([v,t])=>`<button class="chip ${libraryFilter===v?'active':''}" data-filter="${v}" aria-pressed="${libraryFilter===v}">${t}</button>`).join('')}<select class="filter-select" id="upper-filter" aria-label="按上卦筛选"><option value="">上卦 · 全部</option>${book.trigrams.map(t=>`<option value="${t.name}" ${t.name===upperFilter?'selected':''}>${t.name} · ${t.nature}</option>`).join('')}</select><input id="library-query" class="filter-select" style="margin-left:0;width:135px" aria-label="按卦名或序号查找" placeholder="卦名 / 序号" value="${escape(libraryQuery)}"></div><div class="collection-meta"><span id="collection-count">共 ${chapters.length} 卦</span><span>卦画自下而上读</span></div><div id="gua-results">${chapters.length?`<div class="gua-grid">${chapters.map(guaCard).join('')}</div>`:empty('还没有找到卦象','试试其他筛选条件，或先读一卦并加入收藏。','#read/1','从乾卦开始')}</div>`;}
+  function guaResults(chapters) {
+    if(!chapters.length)return empty('还没有找到卦象','试试其他筛选条件，或先读一卦并加入收藏。','#read/1','从乾卦开始');
+    if(libraryView==='grid')return `<div class="gua-grid">${chapters.map(guaCard).join('')}</div>`;
+    const order=['乾','兑','离','震','巽','坎','艮','坤'],visible=new Set(chapters.map(c=>c.id));
+    return `<div class="gua-matrix-scroll" role="region" aria-label="上下卦交叉查找，窄屏可左右滑动" tabindex="0"><table class="gua-matrix"><caption>行是上卦，列是下卦；在交点找到六爻卦。</caption><thead><tr><th scope="col" class="matrix-corner">上卦 ↓<br>下卦 →</th>${order.map(name=>`<th scope="col">${hex(tri(name).bits,'small')}<span>${name} · ${tri(name).nature}</span></th>`).join('')}</tr></thead><tbody>${order.map(upper=>`<tr><th scope="row">${hex(tri(upper).bits,'small')}<span>${upper} · ${tri(upper).nature}</span></th>${order.map(lower=>{const c=book.chapters.find(c=>c.upper===upper&&c.lower===lower);return `<td>${visible.has(c.id)?`<a href="#read/${c.id}" aria-label="第${c.id}卦，${c.title}"><small>${String(c.id).padStart(2,'0')}</small>${hex(c.bits,'small')}<strong>${c.name}</strong></a>`:`<span class="matrix-filtered" aria-label="${c.name}卦，不符合当前筛选">${hex(c.bits,'small')}<span>${c.name}</span></span>`}</td>`;}).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }
+  function library(){const chapters=filteredChapters();return `${pageHeading('六十四卦 · 观象知变','从一幅卦图，读懂一种处境。','按卦序慢慢读，也可以从上下卦的组合中找到你想看的那一卦。',`<span class="tiny-label">已读 ${state.completed.length} 卦 · ${pct()}%</span>`)}<div class="library-controls"><div class="library-view-switch" role="group" aria-label="卦典浏览方式">${[['grid','卦序浏览'],['matrix','上下卦表']].map(([view,label])=>`<button data-library-view="${view}" aria-pressed="${libraryView===view}">${label}</button>`).join('')}</div><div class="filter-bar">${[['all','全部'],['upper','上经 · 30'],['lower','下经 · 34'],['saved','我的收藏'],['done','已读']].map(([v,t])=>`<button class="chip ${libraryFilter===v?'active':''}" data-filter="${v}" aria-pressed="${libraryFilter===v}">${t}</button>`).join('')}<select class="filter-select" id="upper-filter" aria-label="按上卦筛选"><option value="">上卦 · 全部</option>${book.trigrams.map(t=>`<option value="${t.name}" ${t.name===upperFilter?'selected':''}>${t.name} · ${t.nature}</option>`).join('')}</select><input id="library-query" class="filter-select" aria-label="按卦名或序号查找" placeholder="卦名 / 序号" value="${escape(libraryQuery)}"></div></div><div class="collection-meta"><span id="collection-count">共 ${chapters.length} 卦</span><span>${libraryView==='matrix'?'上卦 × 下卦 · 八八六十四卦':'卦画自下而上读'}</span></div><div id="gua-results">${guaResults(chapters)}</div>`;}
   const empty=(title,desc,href,label)=>`<div class="empty-state"><h3>${title}</h3><p>${desc}</p>${href?`<a class="button secondary" href="${href}">${label} ${arrow}</a>`:''}</div>`;
   const blockNames={original:'经传原文',translation:'白话译文',commentary:'书中解读'};
   function readerBlocks(c){return c.sections.map((s,i)=>{const blocks=s.blocks.filter(b=>readMode==='all'||b.type===readMode);return blocks.length?`<section class="reading-section" id="section-${i}" data-section-index="${i}"><div class="reading-section-heading"><h2 tabindex="-1">${s.title}</h2><button class="page-ref" data-reader-source="${s.page}">原书第 ${s.page} 页 · 看图文 ↗</button></div>${readerGuide.inline(c,i)}${blocks.map(b=>`<div class="reading-block ${b.type}"><span class="block-label">${blockNames[b.type]}</span>${b.text.split('\n\n').filter(Boolean).map(t=>`<p>${escape(t)}</p>`).join('')}</div>`).join('')}</section>`:'';}).join('');}
@@ -197,8 +209,8 @@
     else if(oldRoute==='search'){searchQuery='';$('#global-query').value='';if($('#global-search').contains(document.activeElement))$('#main').focus({preventScroll:true});}
     const page=Math.max(1,Math.min(212,parseInt(parts[1],10)||1));
     const views={home,library,basics,practice,notes,interpret:()=>interpreter.render(parts),explore:()=>learningView(parts),draws:drawHistory,read:()=>reader(byId(activeRead)),search,source:()=>source(page)};
-    const main=$('#main');main.innerHTML=views[routeName]();main.classList.remove('fade-in');void main.offsetWidth;main.classList.add('fade-in');
-    updateChrome();$('#sidebar').classList.remove('open');$('#mobile-menu').setAttribute('aria-expanded','false');
+    const main=$('#main');main.dataset.view=routeName;main.innerHTML=views[routeName]();main.classList.remove('fade-in');void main.offsetWidth;main.classList.add('fade-in');
+    updateChrome();setMenu(false,false);
     if(routeName==='basics')compose();
     if(activeRead)readerGuide.mount(byId(activeRead),Number(parts[2])||0);
     if(routeName==='source'&&sourceMode==='text')loadPages().then(()=>{if(token===renderToken&&$('#page-content'))$('#page-content').textContent=window.YIJING_PAGES[page-1];}).catch(e=>{if($('#page-content'))$('#page-content').textContent='整理文本加载失败，请使用上方按钮打开 PDF。';});
@@ -207,6 +219,7 @@
   document.addEventListener('click',e=>{
     const el=e.target.closest('button, a');if(!el)return;
     if(el.id==='cancel-search'){cancelSearch();return;}
+    if(el.dataset.libraryView&&['grid','matrix'].includes(el.dataset.libraryView)){libraryView=el.dataset.libraryView;render({keepScroll:true});return;}
     if(el.id==='page-back'){if(routeName==='search'){cancelSearch();return;}savePosition();if(navigation.back())el.disabled=true;return;}
     if(readerGuide.handleClick(el,e))return;
     if(interpreter.handleClick(el))return;
@@ -233,21 +246,42 @@
     if(el.dataset.sourceMode){sourceMode=el.dataset.sourceMode;render({keepScroll:true});}
   });
   document.addEventListener('change',e=>{if(interpreter.handleChange(e.target))return;if(e.target.id==='upper-filter'){upperFilter=e.target.value;render({keepScroll:true});}if(['compose-upper','compose-lower'].includes(e.target.id))compose();if(e.target.id==='import-file')importData(e.target.files[0]);});
-  document.addEventListener('input',e=>{if(interpreter.handleInput(e.target))return;explorer.handleInput(e.target);if(e.target.id==='library-query'){libraryQuery=e.target.value.trim();const chapters=filteredChapters();$('#collection-count').textContent=`共 ${chapters.length} 卦`;$('#gua-results').innerHTML=chapters.length?`<div class="gua-grid">${chapters.map(guaCard).join('')}</div>`:empty('还没有找到卦象','试试另一个卦名或序号。');}});
+  document.addEventListener('input',e=>{if(interpreter.handleInput(e.target))return;explorer.handleInput(e.target);if(e.target.id==='library-query'){libraryQuery=e.target.value.trim();const chapters=filteredChapters();$('#collection-count').textContent=`共 ${chapters.length} 卦`;$('#gua-results').innerHTML=guaResults(chapters);}});
   $('#global-search').addEventListener('input',updateSearchChrome);
   $('#global-search').addEventListener('focusin',updateSearchChrome);
   $('#global-search').addEventListener('focusout',()=>requestAnimationFrame(updateSearchChrome));
   document.addEventListener('submit',e=>{if(e.target.id==='global-search'){e.preventDefault();const input=$('#global-query'),value=input.value.trim();if(!value){input.focus();return;}savePosition();input.value=value;input.blur();location.hash=`search/${encodeURIComponent(value)}`;}if(e.target.id==='page-jump'){e.preventDefault();location.hash=`source/${Math.max(1,Math.min(212,Number($('#page-number').value)||1))}`;}});
   $('#save-note').addEventListener('click',()=>{const text=$('#note-text').value.trim();if(!text){toast('先写下一点想法，再保存吧');return;}state.notes[noteId]={text,updated:Date.now()};const persisted=save();$('#note-dialog').close();render({keepScroll:true});if(persisted)toast('笔记已保存');});
   $('#note-dialog').addEventListener('click',e=>{if(e.target===$('#note-dialog'))$('#note-dialog').close();});
-  $('#mobile-menu').addEventListener('click',()=>{const open=$('#sidebar').classList.toggle('open');$('#mobile-menu').setAttribute('aria-expanded',String(open));});
-  document.addEventListener('click',e=>{if(!e.target.closest('#sidebar,#mobile-menu')){$('#sidebar').classList.remove('open');$('#mobile-menu').setAttribute('aria-expanded','false');}});
+  function setMenu(open,restoreFocus=true){
+    const wasOpen=$('#sidebar').classList.contains('open');
+    $('#sidebar').classList.toggle('open',open);
+    $('#mobile-menu').setAttribute('aria-expanded',String(open));
+    $('#mobile-menu').setAttribute('aria-label',open?'关闭栏目菜单':'展开全部导航');
+    $('#menu-backdrop').hidden=!open;
+    document.body.classList.toggle('menu-open',open);
+    if(open)$('#close-menu').focus();
+    else if(wasOpen&&restoreFocus)$('#mobile-menu').focus();
+  }
+  $('#mobile-menu').addEventListener('click',()=>setMenu(!$('#sidebar').classList.contains('open')));
+  $('#close-menu').addEventListener('click',()=>setMenu(false));
+  document.addEventListener('click',e=>{if(!e.target.closest('#sidebar,#mobile-menu')&&$('#sidebar').classList.contains('open'))setMenu(false);});
+  window.matchMedia('(max-width:1000px)').addEventListener('change',()=>setMenu(false,false));
   document.addEventListener('keydown',e=>{
     if(e.defaultPrevented||e.isComposing||document.querySelector('dialog[open]'))return;
+    if($('#sidebar').classList.contains('open')){
+      if(e.key==='Escape'){e.preventDefault();setMenu(false);return;}
+      if(e.key==='Tab'){
+        const items=[...$('#sidebar').querySelectorAll('a[href],button:not(:disabled)')],first=items[0],last=items.at(-1);
+        if(!$('#sidebar').contains(document.activeElement)){e.preventDefault();(e.shiftKey?last:first).focus();}
+        else if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+        else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+      }
+      return;
+    }
     const focused=document.activeElement,editing=['INPUT','TEXTAREA','SELECT'].includes(focused.tagName);
     if(e.key==='/'&&!editing){e.preventDefault();$('#global-query').focus();}
     if(e.key==='Escape'){
-      if($('#sidebar').classList.contains('open')){$('#sidebar').classList.remove('open');$('#mobile-menu').setAttribute('aria-expanded','false');return;}
       if((!editing||focused.id==='global-query')&&(routeName==='search'||$('#global-search').contains(focused)||$('#global-query').value)){e.preventDefault();cancelSearch();}
     }
   });
@@ -257,8 +291,8 @@
   function checkNewDay(){if(homeDay!==Draw.dayKey()){homeDay=Draw.dayKey();selectedDrawId=null;$('#top-date').textContent=new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'long'});if(routeName==='home'&&!drawing)render();}}
   window.setInterval(checkNewDay,30000);
   window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue){try{state=normalize(JSON.parse(e.newValue));if(!drawing&&!$('#note-dialog').open&&!$('#reader-source-dialog')?.open&&!document.activeElement?.matches('#interp-question,#interp-reflection'))render({keepScroll:true});}catch(error){/* Ignore invalid external records. */}}});
-  const syncHeaderHeight=()=>document.documentElement.style.setProperty('--app-header-height',`${$('.topbar').getBoundingClientRect().height}px`);
-  if(window.ResizeObserver)new ResizeObserver(syncHeaderHeight).observe($('.topbar'));
+  const syncHeaderHeight=()=>document.documentElement.style.setProperty('--app-header-height',`${$('.app-header').getBoundingClientRect().height}px`);
+  if(window.ResizeObserver)new ResizeObserver(syncHeaderHeight).observe($('.app-header'));
   syncHeaderHeight();
   $('#search-icon').innerHTML=icon('search');$('#top-date').textContent=new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'long'});
   render();

@@ -134,10 +134,36 @@
     const c=byId(entry.chapterId),current=currentDraw();
     return `<button class="card draw-record ${current?.id===entry.id?'current':''}" data-open-draw="${entry.id}"><span class="record-date">${entry.day===Draw.dayKey()?'今日':drawDate(entry)}<small>${drawTime(entry)}</small></span><span class="record-gua">${hex(c.bits,'small')}<span><strong>${c.name}</strong><small>${c.title}</small></span></span><span class="record-bottom">${c.keyword}<span>回看签文 ↗</span></span></button>`;
   }
+  function dailyReadingGuide() {
+    const diagram = c => hex(c.bits,'small').replaceAll('class="yao"','class="yao guide-example-line"');
+    return `<details class="daily-reading-guide">
+      <summary><strong>怎么看这一卦</strong><span>本卦 · 动爻 · 变卦／之卦</span></summary>
+      <div class="daily-guide-body">
+        <p class="daily-guide-intro">先认清六条爻，再看哪些爻发生了变化。爻位从下往上数：初、二、三、四、五、上。</p>
+        <dl class="daily-guide-terms">
+          <div><dt>本卦</dt><dd>最初起出的六条阴阳爻组成的卦，是这次解读的起点。</dd></div>
+          <div><dt>动爻（变爻）</dt><dd>本次起卦中要变化的爻：阳爻变阴爻，阴爻变阳爻。一次可以有零条、一条或多条动爻。</dd></div>
+          <div><dt>之卦（变卦）</dt><dd>把本卦的所有动爻翻转阴阳后得到的卦。在这里，「之卦」和「变卦」指同一个变化后的卦，不是再抽一次。</dd></div>
+        </dl>
+        <figure class="daily-guide-example">
+          <figcaption>学习示例 · 需之泰<span>示例不代表今日签的变化</span></figcaption>
+          <div class="daily-guide-flow">
+            <div><span>本卦</span>${diagram(byId(5))}<strong>水天需</strong></div>
+            <p><b>九五动 →</b><span>从下往上第 5 爻<br>阳爻变阴爻</span></p>
+            <div><span>之卦／变卦</span>${diagram(byId(11))}<strong>地天泰</strong></div>
+          </div>
+          <p>红色标出变化位置。这个例子只有一条动爻，可先读需卦「九五」的爻辞，再结合两卦理解。</p>
+        </figure>
+        <p><strong>动爻怎样产生？</strong>三钱起卦掷六次，每次三枚钱币相加成一爻：6 为老阴、9 为老阳，会变化；7 为少阳、8 为少阴，保持不变。没有动爻时，卦象不变。</p>
+        <aside class="daily-guide-note"><strong>每日一签为什么只显示一卦？</strong><p>这里从六十四卦中抽取一卦，作为每日阅读的引子，没有生成动爻，因此不会额外给出之卦。想体验完整变化，可前往「起卦与解卦」。</p></aside>
+        <div class="daily-guide-links"><a class="text-link" href="#interpret/example">看完整解卦示例 ${arrow}</a><a class="text-link" href="#interpret">亲手起一卦 ${arrow}</a><a class="text-link" href="#basics">从阴阳爻学起 ${arrow}</a></div>
+      </div>
+    </details>`;
+  }
   function home() {
     const entry=currentDraw(),latest=state.draws[0],date=new Date();
     homeDay=Draw.dayKey();
-    return `<div class="daily-heading"><div><span class="eyebrow">日有所遇，心有所悟</span><h2>每日一签</h2></div><div class="daily-date"><strong>${String(date.getMonth()+1).padStart(2,'0')}<i>/</i>${String(date.getDate()).padStart(2,'0')}</strong><span>${date.toLocaleDateString('zh-CN',{year:'numeric',weekday:'long'})}</span></div></div>${entry&&!drawing?drawResult(entry):drawRitual()}<div class="daily-journal-line"><div>${latest?`<span>最近一签</span><button class="text-link" data-open-draw="${latest.id}">${drawDate(latest)} · ${byId(latest.chapterId).title}</button>`:'<span>抽签后，会自动保存到我的签录。</span>'}</div><a class="text-link" href="#draws">我的签录${state.draws.length?` · ${state.draws.length}`:''} ${arrow}</a></div>`;
+    return `<div class="daily-heading"><div><span class="eyebrow">日有所遇，心有所悟</span><h2>每日一签</h2></div><div class="daily-date"><strong>${String(date.getMonth()+1).padStart(2,'0')}<i>/</i>${String(date.getDate()).padStart(2,'0')}</strong><span>${date.toLocaleDateString('zh-CN',{year:'numeric',weekday:'long'})}</span></div></div>${entry&&!drawing?drawResult(entry):drawRitual()}${dailyReadingGuide()}<div class="daily-journal-line"><div>${latest?`<span>最近一签</span><button class="text-link" data-open-draw="${latest.id}">${drawDate(latest)} · ${byId(latest.chapterId).title}</button>`:'<span>抽签后，会自动保存到我的签录。</span>'}</div><a class="text-link" href="#draws">我的签录${state.draws.length?` · ${state.draws.length}`:''} ${arrow}</a></div>`;
   }
   function drawHistory() {
     return `${pageHeading('A JOURNAL OF ENCOUNTERS','我的签录','从偶然的一签，到日积月累的体悟。点击签录，重温当时遇见的卦。', '<a class="button secondary" href="#home">回到每日一签 '+arrow+'</a>')}<p class="source-notice">保留最近 ${Draw.LIMIT} 次抽签；再次抽签也会留下记录。签录随学习备份一起导出，可在「我的笔记」中备份与恢复。</p>${state.draws.length?`<div class="draw-history-grid all-draws">${state.draws.map(drawCard).join('')}</div>`:empty('静候第一签','抽签之后，每次结果都会自动收进这里。','#home','去抽一签')}`;
